@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
 ###!/home/bulldog05/ai_venv/bin/python3
 
+import math
 import os
 import time
+from collections import deque
+from pathlib import Path
+
 # import traceback
 # import matplotlib.pyplot as plt
 import cv2
@@ -10,21 +14,13 @@ import numpy as np
 import onnxruntime as ort
 import rospy
 import torch
-import numpy as np
-import math 
-from std_msgs.msg import String
-from cargobot_msgs.msg import DriveState,Safety
-from cargobot_msgs.msg import LaneFollowing
-from cargobot_msgs.msg import GlobalPath
-from cargobot_msgs.msg import MapStatus, MotionStatus, RobotStatus
-# from collect_data.msg import RemoteControl
-from sensor_msgs.msg import NavSatFix
+from cargobot_msgs.msg import (DriveState, GlobalPath, LaneFollowing,
+                               MapStatus, MotionStatus, RobotStatus, Safety)
 from cv_bridge import CvBridge
-from sensor_msgs.msg import Image, CompressedImage
-from sensor_msgs.msg import Imu
-from pathlib import Path
 from nav_msgs.msg import Odometry
-from collections import deque
+# from collect_data.msg import RemoteControl
+from sensor_msgs.msg import CompressedImage, Image, Imu, NavSatFix
+from std_msgs.msg import String
 
 # ROOT_DIR = Path(os.path.abspath(__file__)).parents[1]
 MODEL_FOLDER = "models"
@@ -33,7 +29,8 @@ MODEL_FOLDER = "models"
 
 # MODEL_PATH = '/home/bulldog01/catkin_ws/src/dev/behaviour_cloning/models/bulldog_sumtn_v11_256_e86_a5000.onnx' # best 1st batch 
 
-MODEL_PATH = '/home/bulldog01/catkin_ws/src/dev/behaviour_cloning/models/bulldog_sumtn_v15_256_e25_a5000.onnx' # best for demo
+#MODEL_PATH = '/home/bulldog01/catkin_ws/src/dev/behaviour_cloning/models/bulldog_sumtn_v15_256_e25_a5000.onnx' # best for demo
+MODEL_PATH = '/home/asimovsimpc/model_weight/bulldog_sumtn_v15_256_e74_a5000.onnx' #TEST 2
 # MODEL_PATH = '/home/bulldog01/catkin_ws/src/dev/behaviour_cloning/models/bulldog_sumtn_v15_256_e53_a5000.onnx'
 
 # MODEL_PATH = '/home/bulldog01/catkin_ws/src/dev/behaviour_cloning/models/bulldog_sumtn_v15_256_e74_a5000.onnx'
@@ -361,8 +358,9 @@ def main():
                   }
     
     ort_session = ort.InferenceSession(MODEL_PATH, providers=[
-        ('TensorrtExecutionProvider', ort_option),
-        'CUDAExecutionProvider',
+        #('TensorrtExecutionProvider', ort_option),
+        #('CUDAExecutionProvider',ort_option),
+        'CUDAExecutionProvider','CPUExecutionProvider'
         ])
 
     # print providers
